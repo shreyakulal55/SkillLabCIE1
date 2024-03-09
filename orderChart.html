@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Orders Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="orderChart" width="400" height="200"></canvas>
+
+  <script>
+    // Fetch daily orders data from your backend
+    fetch('/api/orders/daily')
+      .then(response => response.json())
+      .then(data => {
+        // Process data and create a chart
+        const ctx = document.getElementById('orderChart').getContext('2d');
+        const foodNames = data.map(order => order.foodId.name);
+        const orderQuantities = data.map(order => order.quantity);
+
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: foodNames,
+            datasets: [{
+              label: 'Quantity Ordered',
+              data: orderQuantities,
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      })
+      .catch(error => console.error('Error fetching daily orders:', error));
+  </script>
+</body>
+</html>
